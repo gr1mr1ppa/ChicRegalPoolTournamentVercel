@@ -11,6 +11,7 @@ import { LockOpenIcon } from './icons/LockOpenIcon';
 
 interface ScheduleDisplayProps {
     schedule: TournamentSchedule;
+    scheduleGeneration: number;
     playerNames: string[];
     onScoreChange: (dayIndex: number, roundIndex: number, matchupIndex: number, playerIndex: 0 | 1, score: string) => void;
     onWinnerChange: (dayIndex: number, winnerName: string) => void;
@@ -469,14 +470,26 @@ const DayCard: React.FC<{
 };
 
 
-const ScheduleDisplay: React.FC<ScheduleDisplayProps> = ({ schedule, onScoreChange, onWinnerChange, onDateChange, onShuffleRound, onSubstitutePlayer, onToggleDayLock, playerNames, onMatchupPlayersChange }) => {
+const ScheduleDisplay: React.FC<ScheduleDisplayProps> = ({ 
+    schedule, 
+    scheduleGeneration, 
+    onScoreChange, 
+    onWinnerChange, 
+    onDateChange, 
+    onShuffleRound, 
+    onSubstitutePlayer, 
+    onToggleDayLock, 
+    playerNames, 
+    onMatchupPlayersChange 
+}) => {
   const [activeDayIndex, setActiveDayIndex] = useState(0);
 
-  // When the schedule changes (e.g., new tournament generated), reset to the first day.
-  // This prevents an out-of-bounds error if the new schedule has fewer days than the previous one.
+  // When a new schedule is generated, reset the view to the first day.
+  // This is controlled by the `scheduleGeneration` prop, which changes only
+  // when a full new schedule is created, not on simple score edits.
   useEffect(() => {
     setActiveDayIndex(0);
-  }, [schedule]);
+  }, [scheduleGeneration]);
   
   const activeDay = schedule[activeDayIndex];
 
